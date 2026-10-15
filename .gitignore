@@ -1,0 +1,16 @@
+# Mail and credentials. Passwords from the BGA welcome email live in the
+# keys folder outside this repository.
+source-email/
+*.pem
+*password*
+*secret*
+sftp.json
+.vscode/
+
+# Rulebooks, art, API dumps, and the five BGA presentation PDFs.
+# They stay in this Dropbox folder. They are not committed.
+reference/
+grok/source-docs/
+
+Thumbs.db
+Desktop.ini
