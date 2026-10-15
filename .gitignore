@@ -14,3 +14,5 @@ grok/source-docs/
 
 Thumbs.db
 Desktop.ini
+__pycache__/
+*.pyc

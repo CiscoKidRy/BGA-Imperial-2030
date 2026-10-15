@@ -26,7 +26,7 @@ Use these rules whenever work on this game resumes.
 
 ## Counsel
 
-Every review uses more than one agent. Each agent reads the change and the cited sources. The written review goes in `grok/counsel/` and is committed with the change, without secrets. A finding that a sentence is unsupported gets the sentence removed or sourced before merge.
+A counsel of more than one agent runs at each step, including reading a source, writing a plan, and changing code, and again before a commit. Each agent reads the step’s output and the cited sources. The written review goes in `grok/counsel/` and is committed with the change, without secrets. A finding that a sentence is unsupported gets the sentence removed or sourced before that step is treated as done.
 
 ## Studio
 

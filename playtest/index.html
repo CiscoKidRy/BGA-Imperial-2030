@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Imperial 2030 test</title>
+<style>
+  :root {
+    --ink: #1A1A1A;
+    --paper: #FFFFFF;
+    --banner: #1A1814;
+    --cream: #F4F0E6;
+    --muted: #8A8478;
+    --gold: #E8A317;
+    --phase: #3A3428;
+    --line: #D9D3C7;
+    --sea: #D7E7F2;
+    --neutral: #E6D3A8;
+    --russia: #5E2B8A;
+    --china: #F5C400;
+    --india: #1A1A1A;
+    --brazil: #146C2E;
+    --usa: #B42318;
+    --europe: #1D4E89;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font: 16px/1.4 "Segoe UI", sans-serif;
+  }
+  button, input, select { font: inherit; color: var(--ink); }
+  button { min-height: 44px; min-width: 96px; }
+  :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  #next-action :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--line);
+    background: var(--paper);
+  }
+  h1 { font-size: 18px; margin: 0; }
+  #seats { display: flex; flex-wrap: wrap; gap: 8px; }
+  #next-action {
+    background: var(--banner);
+    color: var(--cream);
+    padding: 12px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+  .facts {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    min-height: 80px;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 28px;
+    padding: 0 10px;
+    border-radius: 2px;
+    font-weight: 600;
+  }
+  .who { max-width: 180px; color: var(--cream); }
+  .who span, .nation-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .swatch {
+    width: 12px;
+    height: 12px;
+    flex: 0 0 12px;
+    border: 1px solid var(--cream);
+  }
+  .phase { background: var(--phase); color: var(--cream); font-size: 14px; }
+  .waiting-chip { border: 2px solid #E6E0D4; color: #E6E0D4; background: transparent; font-size: 12px; }
+  .sentence { flex: 1 1 280px; font-size: 16px; line-height: 22px; margin: 0; }
+  .unit { font-size: 12px; color: #E6E0D4; }
+  .actions, .choice-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .primary { background: var(--cream); color: var(--ink); border: 2px solid var(--cream); }
+  .secondary { background: transparent; color: var(--cream); border: 2px solid var(--cream); }
+  .alert { background: transparent; color: var(--cream); border: 2px solid #E07A5F; margin-left: 16px; }
+  .choice, .choice[disabled] {
+    min-height: 44px;
+    text-align: left;
+    background: var(--paper);
+    color: var(--ink);
+    border: 3px solid var(--cream);
+    box-shadow: 0 0 0 1px var(--ink);
+  }
+  .choice[disabled], .choice.blocked {
+    background: rgba(26,24,20,0.72);
+    color: var(--cream);
+    border-style: dashed;
+    cursor: not-allowed;
+  }
+  .steps { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0 0; padding: 0; list-style: none; }
+  .steps li { min-height: 32px; min-width: 96px; padding: 4px 10px; font-size: 14px; font-weight: 600; }
+  .steps .now { background: var(--phase); color: var(--cream); box-shadow: inset 4px 0 0 var(--gold); }
+  .steps .done { color: #E6E0D4; }
+  .steps .later, .steps .skipped { color: var(--muted); }
+  #track-wrap { padding: 8px 16px 0; overflow-x: auto; }
+  #factors, #track { display: grid; grid-template-columns: repeat(26, minmax(44px, 1fr)); gap: 2px; min-width: 1144px; }
+  #factors span, .cell { text-align: center; font-size: 12px; font-variant-numeric: tabular-nums; }
+  .cell { min-height: 44px; border: 1px solid var(--line); background: var(--paper); padding-top: 2px; }
+  .cell .marks { display: flex; justify-content: center; gap: 2px; }
+  main, aside, .layout, .map-row, #map-frame, #track-wrap, #tax-chart, #trays, #action-rondel { min-width: 0; max-width: 100%; }
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 16px; padding: 16px; }
+  .map-row { display: grid; grid-template-columns: minmax(0, 1fr) 384px; gap: 16px; align-items: start; }
+  #map-frame { overflow: auto; border: 1px solid var(--line); background: #F7F4EE; min-height: 420px; }
+  #map { width: 1100px; padding: 12px; display: grid; grid-template-columns: 1.1fr 1.3fr 1fr 1.2fr; gap: 8px; }
+  .region { min-height: 72px; padding: 8px; border: 1px solid var(--ink); }
+  .region h2, .region h3 { margin: 0 0 6px; font-size: 16px; }
+  .label {
+    display: inline-block;
+    background: var(--paper);
+    color: var(--ink);
+    border: 1px solid var(--ink);
+    padding: 2px 6px;
+  }
+  .sea { background: var(--sea); }
+  .neutral { background: var(--neutral); }
+  .home { min-height: 160px; }
+  .cities, .piece-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .city, .piece {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 4px 8px;
+    background: var(--paper);
+    color: var(--ink);
+    border: 1px solid var(--ink);
+  }
+  .city.legal, .region.legal {
+    border: 3px solid var(--cream);
+    box-shadow: 0 0 0 1px var(--ink);
+  }
+  .swiss { background: var(--paper); }
+  .cross { width: 28px; height: 28px; position: relative; display: inline-block; vertical-align: middle; }
+  .cross::before, .cross::after { content: ""; position: absolute; background: #B42318; }
+  .cross::before { left: 11px; top: 0; width: 6px; height: 28px; }
+  .cross::after { left: 0; top: 11px; width: 28px; height: 6px; }
+  #action-rondel { border: 1px solid var(--ink); padding: 16px; background: var(--paper); }
+  #action-rondel h2 { margin: 0 0 8px; font-size: 16px; }
+  .caption { margin: 0 0 8px; font-size: 14px; }
+  .wheel-wrap { position: relative; width: 288px; height: 288px; margin: 0 auto 12px; }
+  .wheel {
+    width: 288px; height: 288px; border-radius: 50%;
+    border: 8px solid var(--ink);
+    background: conic-gradient(
+      #F4F0E6 0 45deg, #E7E1D6 45deg 90deg, #F4F0E6 90deg 135deg, #E7E1D6 135deg 180deg,
+      #F4F0E6 180deg 225deg, #E7E1D6 225deg 270deg, #F4F0E6 270deg 315deg, #E7E1D6 315deg 360deg
+    );
+  }
+  .hub {
+    position: absolute; left: 112px; top: 112px; width: 64px; height: 64px;
+    border-radius: 50%; background: var(--paper); border: 1px solid var(--ink);
+    font-size: 11px; text-align: center; padding-top: 10px;
+  }
+  .wedge-label {
+    position: absolute; width: 44px; height: 44px; margin-left: -22px; margin-top: -22px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600; background: transparent; border: 0; min-width: 44px;
+  }
+  .rondel-row {
+    display: grid;
+    grid-template-columns: 36px 1fr 88px 96px;
+    gap: 8px;
+    align-items: center;
+    min-height: 48px;
+    width: 100%;
+    margin-top: 4px;
+    text-align: left;
+  }
+  #tax-chart { margin-top: 16px; overflow-x: auto; }
+  #tax-chart table { border-collapse: collapse; width: 100%; min-width: 720px; }
+  #tax-chart th, #tax-chart td { border: 1px solid var(--ink); text-align: center; min-width: 44px; height: 44px; }
+  #tax-chart .hot { background: var(--cream); outline: 2px solid var(--ink); }
+  #trays { display: grid; grid-template-columns: repeat(6, minmax(140px, 1fr)); gap: 8px; margin-top: 16px; overflow-x: auto; }
+  .tray { border: 1px solid var(--line); background: var(--paper); min-width: 140px; }
+  .tray header { min-height: 44px; padding: 8px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--ink); }
+  .tray.active { outline: 3px solid var(--ink); }
+  .tray { overflow: hidden; }
+  .tray dl { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; margin: 0; padding: 8px; font-variant-numeric: tabular-nums; }
+  .tray dt { font-size: 13px; }
+  .tray dd { margin: 0; text-align: right; overflow-wrap: anywhere; }
+  .strong { font-weight: 700; }
+  .quiet { font-size: 12px; color: #333; }
+  aside { width: 280px; }
+  .panel { border: 1px solid var(--line); padding: 8px; margin-bottom: 8px; background: var(--paper); }
+  .panel.deciding { outline: 2px solid var(--ink); }
+  .cash {
+    width: 96px; height: 28px; background: #D8D8D8; color: #222; display: flex;
+    align-items: center; justify-content: center; font-variant-numeric: tabular-nums;
+  }
+  .add-row { display: flex; gap: 8px; margin-top: 8px; }
+  .add-row input { width: 72px; min-height: 44px; }
+  #log { max-height: 280px; overflow: auto; border: 1px solid var(--line); padding: 8px; }
+  #log ol { margin: 0; padding-left: 18px; }
+  #limit { font-size: 14px; }
+  .pat-diagonal { background-image: repeating-linear-gradient(45deg, transparent 0 4px, rgba(255,255,255,.35) 4px 6px); }
+  .pat-dots { background-image: radial-gradient(rgba(26,26,26,.45) 1px, transparent 1.5px); background-size: 6px 6px; }
+  .pat-horizontal { background-image: repeating-linear-gradient(0deg, transparent 0 4px, rgba(255,255,255,.4) 4px 6px); }
+  .pat-vertical { background-image: repeating-linear-gradient(90deg, transparent 0 4px, rgba(255,255,255,.4) 4px 6px); }
+  .pat-cross { background-image: repeating-linear-gradient(45deg, transparent 0 5px, rgba(255,255,255,.35) 5px 6px), repeating-linear-gradient(-45deg, transparent 0 5px, rgba(255,255,255,.35) 5px 6px); }
+  @media (max-width: 959px) {
+    .layout, .map-row { grid-template-columns: 1fr; }
+    aside { width: auto; }
+    #map { width: 720px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; }
+  }
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <h1>Imperial 2030 test</h1>
+    <div id="seats"></div>
+  </div>
+  <section id="next-action" aria-live="polite"></section>
+  <div id="track-wrap">
+    <div id="factors"></div>
+    <div id="track"></div>
+  </div>
+  <div class="layout">
+    <main>
+      <div class="map-row">
+        <div id="map-frame"><div id="map"></div></div>
+        <section id="action-rondel" hidden></section>
+      </div>
+      <div id="tax-chart"></div>
+      <div id="trays"></div>
+    </main>
+    <aside>
+      <div id="panels"></div>
+      <h2>Log</h2>
+      <div id="log"></div>
+      <h2>What this test leaves out</h2>
+      <p id="limit"></p>
+    </aside>
+  </div>
+<script>
+const NATIONS = [
+  ["russia", "Russia", "RU", "R", "#5E2B8A", "#FFFFFF", "pat-diagonal"],
+  ["china", "China", "CN", "C", "#F5C400", "#1A1A1A", "pat-dots"],
+  ["india", "India", "IN", "I", "#1A1A1A", "#FFFFFF", "pat-solid"],
+  ["brazil", "Brazil", "BR", "B", "#146C2E", "#FFFFFF", "pat-horizontal"],
+  ["usa", "United States", "US", "U", "#B42318", "#FFFFFF", "pat-vertical"],
+  ["europe", "Europe", "EU", "E", "#1D4E89", "#FFFFFF", "pat-cross"]
+];
+const nationById = Object.fromEntries(NATIONS.map((row) => [row[0], row]));
+const FACTOR_BANDS = ["", "x0", "", "", "", "", "x1", "", "", "", "", "x2", "", "", "", "", "x3", "", "", "", "", "x4", "", "", "", "x5"];
+
+let gameId = null;
+let seat = 0;
+let state = null;
+let flash = "";
+let requestSerial = 0;
+
+function clearCashNodes() {
+  document.querySelectorAll("[data-cash]").forEach((node) => node.remove());
+}
+
+async function api(path, body) {
+  const response = await fetch(path, body ? {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(body)
+  } : undefined);
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || "The action was refused");
+  return data;
+}
+
+async function refresh() {
+  if (!gameId) { render(); return; }
+  const token = ++requestSerial;
+  const next = await api(`/api/game/${gameId}?seat=${seat}`);
+  if (token !== requestSerial) return;
+  state = next;
+  render();
+}
+
+async function send(action) {
+  const token = ++requestSerial;
+  try {
+    const next = await api(`/api/game/${gameId}/act`, {seat, action});
+    if (token !== requestSerial) return;
+    state = next;
+    flash = "";
+    render();
+  } catch (error) {
+    if (token !== requestSerial) return;
+    flash = error.message;
+    const next = await api(`/api/game/${gameId}?seat=${seat}`);
+    if (token !== requestSerial) return;
+    state = next;
+    flash = error.message;
+    render();
+  }
+}
+
+function chip(fill, text, pattern, letter) {
+  return `<i class="swatch ${pattern}" style="background-color:${fill};color:${text}" aria-hidden="true"></i>`;
+}
+
+function renderBanner() {
+  const root = document.getElementById("next-action");
+  if (!state) {
+    root.innerHTML = `
+      <div class="facts">
+        <span class="chip who">No one</span>
+        <span class="chip phase">Setup</span>
+        <p class="sentence">Choose the player count and the deal, then place both markers.</p>
+      </div>
+      <form id="setup" class="actions">
+        <label>Players <select id="count">${[2,3,4,5,6].map((n) => `<option ${n===4?"selected":""}>${n}</option>`).join("")}</select></label>
+        <button class="primary" type="submit">Start experienced setup</button>
+      </form>
+      <p class="unit">This test uses the experienced cash. The basic deal is not in this screen.</p>`;
+    root.querySelector("#setup").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const count = Number(document.getElementById("count").value);
+      const names = ["Ava", "Bo", "Cy", "Dee", "Eve", "Finn"].slice(0, count);
+      state = await api("/api/game", {names});
+      gameId = state.id;
+      seat = 0;
+      render();
+    });
+    return;
+  }
+  const banner = state.banner;
+  const nation = NATIONS.find((row) => row[1] === banner.nation);
+  const nationChip = nation
+    ? `<span class="chip nation-chip" style="background:${nation[4]};color:${nation[5]};border:1px solid ${nation[4] === "#F5C400" ? "#1A1A1A" : nation[5]}">${chip(nation[4], nation[5], nation[6])}<span>${nation[2]} ${nation[1]}</span></span>`
+    : `<span class="chip nation-chip">None</span>`;
+  const buttons = state.legal.filter((item) => ["primary", "alert", "secondary"].includes(item.role) && item.enabled);
+  const choices = state.legal.filter((item) => item.role === "choice" && !String(item.id).startsWith("rondel:"));
+  const hasCost = state.legal.some((item) => typeof item.cost === "number");
+  root.setAttribute("aria-live", buttons.length ? "assertive" : "polite");
+  root.innerHTML = `
+    <div class="facts">
+      <span class="chip who" title="${banner.who}"><i class="swatch" style="background:#F4F0E6"></i><span>${banner.who}</span></span>
+      ${nationChip}
+      <span class="chip phase">${banner.phase}</span>
+      ${banner.waiting ? `<span class="chip waiting-chip">Waiting</span>` : ""}
+      ${banner.swissIndex ? `<span class="chip phase">${banner.swissIndex}</span>` : ""}
+      <p class="sentence" id="sentence">${flash || banner.sentence}</p>
+      ${hasCost ? `<span class="unit">Unit: million</span>` : ""}
+    </div>
+    ${state.steps && state.steps.length ? `<ol class="steps">${state.steps.map((step) => `<li class="${step.state === "now" ? "now" : step.state === "done" ? "done" : "later"}">${step.state === "done" ? "Done " : ""}${step.label}</li>`).join("")}</ol>` : ""}
+    <div class="actions">${buttons.map((item) => `<button class="${item.role}" data-action="${item.id}" ${item.enabled ? "" : "disabled"}>${item.label}</button>`).join("")}</div>
+    <div class="choice-list">${choices.map((item) => `<button class="choice ${item.privateBlock ? "blocked" : ""}" data-action="${item.id}" ${item.enabled ? "" : "disabled"}>${item.label}. ${item.detail}</button>`).join("")}</div>`;
+  root.querySelectorAll("[data-action]").forEach((button) => {
+    button.addEventListener("click", () => send(button.dataset.action));
+  });
+  const primary = root.querySelector(".primary");
+  const focusKey = `${banner.sentence}|${primary ? primary.dataset.action : ""}`;
+  if (primary && focusKey !== root.dataset.focusKey && document.activeElement.tagName !== "INPUT") {
+    root.dataset.focusKey = focusKey;
+    primary.focus({preventScroll: true});
+  }
+}
+
+function renderTrack() {
+  const factors = document.getElementById("factors");
+  const track = document.getElementById("track");
+  factors.innerHTML = FACTOR_BANDS.map((text) => `<span>${text}</span>`).join("");
+  const cells = [];
+  for (let value = 0; value <= 25; value += 1) {
+    const marks = (state ? state.nations : []).filter((nation) => nation.power === value).map((nation) => {
+      const style = nationById[nation.id];
+      return `<i class="swatch ${style[6]}" title="${style[1]} ${value}" style="background:${style[4]};color:${style[5]};width:18px;height:18px;border:1px solid #1A1A1A"></i>`;
+    }).join("");
+    cells.push(`<div class="cell"><div>${value}</div><div class="marks">${marks}</div></div>`);
+  }
+  track.innerHTML = cells.join("");
+}
+
+function pieces(regionName) {
+  if (!state) return "";
+  const region = state.map.find((row) => row.name === regionName);
+  if (!region) return "";
+  const bits = [];
+  if (region.factory) {
+    const word = region.factory === "armament" ? "armament" : "harbor";
+    bits.push(`<span class="piece">${word}</span>`);
+  }
+  region.armies.forEach((army) => {
+    const style = nationById[army.nation];
+    bits.push(`<span class="piece">${style[3]} ${army.hostile ? "hostile" : "friendly"}</span>`);
+  });
+  region.fleets.forEach((fleet) => {
+    bits.push(`<span class="piece">${nationById[fleet][3]} fleet</span>`);
+  });
+  if (region.flag) bits.push(`<span class="piece">${nationById[region.flag][3]} flag</span>`);
+  return bits.length ? `<div class="piece-row">${bits.join("")}</div>` : "";
+}
+
+function renderMap() {
+  const map = document.getElementById("map");
+  if (!state) { map.innerHTML = ""; return; }
+  const legalRegions = new Set(state.legal.filter((item) => item.region && item.enabled).map((item) => item.region));
+  const home = (id) => {
+    const style = nationById[id];
+    const cities = state.map.filter((row) => row.kind === "home" && row.nation === id);
+    return `<section class="region home" style="background:${style[4]}" data-nation="${id}">
+      <h2><span class="label">${style[3]} ${style[1]}</span></h2>
+      <div class="cities">${cities.map((city) => `<button type="button" class="city ${legalRegions.has(city.name) ? "legal" : ""}" data-region="${city.name}">${city.name}<br>${city.cityKind === "armament" ? "armament city" : "harbor city"}${pieces(city.name)}</button>`).join("")}</div>
+    </section>`;
+  };
+  const seaNames = ["North Pacific", "South Pacific", "Caribbean Sea", "North Atlantic", "Mediterranean Sea", "Gulf of Guinea", "South Atlantic", "Indian Ocean", "China Sea", "Sea of Japan", "Tasman Sea"];
+  const neutrals = state.map.filter((row) => row.kind === "neutral").map((row) => row.name);
+  map.innerHTML = `
+    <div class="region sea"><h3><span class="label">East-west links</span></h3>
+      <div class="cities">
+        <button type="button" data-pan="North Pacific">NP–SJ North Pacific and Sea of Japan</button>
+        <button type="button" data-pan="China Sea">NP–CS North Pacific and China Sea</button>
+        <button type="button" data-pan="South Pacific">SP–CS South Pacific and China Sea</button>
+        <button type="button" data-pan="Tasman Sea">SP–TS South Pacific and Tasman Sea</button>
+      </div>
+      <p>No north-south wrap. Panama's west mouth is not drawn.</p>
+    </div>
+    ${home("usa")}
+    ${seaNames.slice(0, 4).map((name) => `<div class="region sea ${legalRegions.has(name) ? "legal" : ""}" data-region="${name}"><h3><span class="label">${name}</span></h3>${pieces(name)}</div>`).join("")}
+    ${home("europe")}
+    <div class="region swiss"><h3><span class="label"><i class="cross" aria-hidden="true"></i> Switzerland</span></h3><p>No army enters.</p></div>
+    ${home("russia")}${home("china")}${home("india")}${home("brazil")}
+    ${seaNames.slice(4).map((name) => `<div class="region sea ${legalRegions.has(name) ? "legal" : ""}" data-region="${name}"><h3><span class="label">${name}</span></h3>${pieces(name)}</div>`).join("")}
+    ${neutrals.map((name) => `<div class="region neutral ${legalRegions.has(name) ? "legal" : ""}" data-region="${name}"><h3><span class="label">${name}</span></h3>${pieces(name)}</div>`).join("")}
+    <div class="region sea" id="position-card"><h3><span class="label">South Pacific rondel, position only</span></h3><p>1 to 3 fields for free. Choose on the action rondel.</p><div id="position-marks"></div></div>`;
+  map.querySelectorAll("[data-pan]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const target = map.querySelector(`[data-region="${button.dataset.pan}"]`);
+      if (target) target.scrollIntoView({block: "nearest", inline: "nearest"});
+    });
+  });
+  map.querySelectorAll("[data-region]").forEach((node) => {
+    node.addEventListener("click", () => {
+      const matches = state.legal.filter((item) => item.region === node.dataset.region && item.enabled && item.role === "choice");
+      if (matches.length === 1) send(matches[0].id);
+      else {
+        flash = "Not a legal choice.";
+        renderBanner();
+        setTimeout(() => { if (flash === "Not a legal choice.") { flash = ""; renderBanner(); } }, 2000);
+      }
+    });
+  });
+  const marks = document.getElementById("position-marks");
+  marks.innerHTML = state.nations.map((nation) => `${nationById[nation.id][3]} ${nation.rondel || "in the hub"}`).join(" · ");
+}
+
+function renderRondel() {
+  const panel = document.getElementById("action-rondel");
+  const rows = state ? state.legal.filter((item) => String(item.id).startsWith("rondel:")) : [];
+  if (!rows.length) { panel.hidden = true; panel.innerHTML = ""; return; }
+  panel.hidden = false;
+  const active = state.nations.find((nation) => nation.active);
+  panel.innerHTML = `
+    <h2>Action rondel</h2>
+    <p class="caption">Factory is at the top here. The map wheel may be turned differently. The clockwise order is the same.</p>
+    <p class="caption">1 to 3 fields for free.</p>
+    <div class="wheel-wrap">
+      <div class="wheel" id="wheel" aria-hidden="true"></div>
+      <div class="hub">hub</div>
+      ${state.rondelOrder.map((name, index) => {
+        const rad = ((index + 0.5) * 45) * Math.PI / 180;
+        const x = 144 + Math.sin(rad) * 100;
+        const y = 144 - Math.cos(rad) * 100;
+        const row = rows.find((item) => item.id === `rondel:${index}`);
+        const text = row && row.steps ? row.steps : (active && active.rondelIndex === index ? "now" : (row ? "any" : ""));
+        return `<button type="button" class="wedge-label" style="left:${x}px;top:${y}px" data-action="rondel:${index}" ${row && row.enabled ? "" : "disabled"}>${text}</button>`;
+      }).join("")}
+    </div>
+    <div role="radiogroup" aria-label="Rondel spaces">${rows.map((item) => `<button type="button" class="rondel-row ${item.privateBlock ? "blocked" : ""}" data-action="${item.id}" ${item.enabled ? "" : "disabled"}><span>${item.steps || "any"}</span><span>${item.label}${item.selected ? " Selected" : ""}</span><span>${item.cost}</span><span>${item.privateBlock ? "cannot pay" : (item.selected ? "selected" : "")}</span></button>`).join("")}</div>`;
+  panel.querySelectorAll("[data-action]").forEach((button) => {
+    if (!button.disabled) button.addEventListener("click", () => send(button.dataset.action));
+  });
+}
+
+function renderTax() {
+  const root = document.getElementById("tax-chart");
+  if (!state) { root.innerHTML = ""; return; }
+  const hot = state.banner.phase === "Taxation" ? (state.legal.find((item) => item.taxColumn != null) || {}).taxColumn : null;
+  const headers = ["0-5", "6", "8", "10", "11", "12", "13", "14", "15", "16", "18+"];
+  const row = (label, values) => `<tr><th>${label}</th>${values.map((value, index) => `<td class="${index === hot ? "hot" : ""}">${value}</td>`).join("")}</tr>`;
+  root.innerHTML = `<table><caption>Tax chart. A revenue of 7, 9, or 17 uses the rightmost header at or below it.</caption>
+    <tr><th>Tax</th>${headers.map((value, index) => `<th class="${index === hot ? "hot" : ""}">${value}</th>`).join("")}</tr>
+    ${row("Bonus", state.tax.bonus)}
+    ${row("Power", state.tax.power)}
+  </table>`;
+}
+
+function renderTrays() {
+  const root = document.getElementById("trays");
+  if (!state) { root.innerHTML = ""; return; }
+  root.innerHTML = state.nations.map((nation) => {
+    const style = nationById[nation.id];
+    const credit = nation.credit == null ? "—" : nation.credit;
+    const interest = nation.interest == null ? "—" : nation.interest;
+    const top = nation.topBond ? `${nation.topBond.interest} / ${nation.topBond.price} · ${nation.topBond.left} left` : "none";
+    return `<article class="tray ${nation.active ? "active" : ""}">
+      <header style="background:${style[4]};color:${style[5]}"><i class="swatch ${style[6]}" style="background:${style[4]};border-color:${style[5]}"></i><span class="label">${style[3]} ${style[1]}</span>${nation.active ? "<span class=\"label\">turn</span>" : ""}</header>
+      <dl>
+        <dt>Government</dt><dd>${nation.government}</dd>
+        <dt class="strong">Credit</dt><dd class="strong">${credit}<br><span class="quiet">decides government</span></dd>
+        <dt>Interest</dt><dd>${interest}<br><span class="quiet">not used for government</span></dd>
+        <dt>Treasury, million</dt><dd>${nation.treasury}</dd>
+        <dt>Power</dt><dd>${nation.power}</dd>
+        <dt>Factor</dt><dd>${nation.factorText || "—"}</dd>
+        <dt>Top bond</dt><dd>${top}</dd>
+        <dt>Factories</dt><dd>${nation.factories.armament} brown, ${nation.factories.harbor} light blue</dd>
+        <dt>Armies</dt><dd>${nation.armies.board} on board, ${nation.armies.supply} left</dd>
+        <dt>Fleets</dt><dd>${nation.fleets.board} on board, ${nation.fleets.supply} left</dd>
+        <dt>Flags</dt><dd>${nation.flags.board} on board, ${nation.flags.supply} left</dd>
+      </dl>
+    </article>`;
+  }).join("");
+}
+
+function renderPanels() {
+  const root = document.getElementById("panels");
+  const seats = document.getElementById("seats");
+  if (!state) { root.innerHTML = ""; seats.innerHTML = ""; return; }
+  seats.innerHTML = state.players.map((player) => `<button type="button" data-seat="${player.seat}" ${player.seat === seat ? "aria-current=\"true\"" : ""}>View as ${player.name}</button>`).join("");
+  seats.querySelectorAll("[data-seat]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      clearCashNodes();
+      seat = Number(button.dataset.seat);
+      await refresh();
+    });
+  });
+  root.innerHTML = state.players.map((player) => {
+    const cashText = player.cash == null ? "Private" : `${player.cash} million`;
+    const groups = {};
+    player.bonds.forEach((bond) => {
+      groups[bond.nation] = groups[bond.nation] || [];
+      groups[bond.nation].push(bond);
+    });
+    const bondHtml = NATIONS.filter((row) => groups[row[0]]).map((row) => {
+      const list = groups[row[0]];
+      const sum = list.reduce((total, bond) => total + bond.price, 0);
+      return `<p><span class="label">${row[2]} ${row[1]} prices ${sum}</span></p>` + list.map((bond) => `<p>price ${bond.price} · interest ${bond.interest}</p>`).join("");
+    }).join("") || "<p>No bonds</p>";
+    const mine = player.seat === seat;
+    const governed = state.nations.filter((nation) => nation.government === player.name);
+    const adds = mine ? governed.map((nation) => `<form class="add-row" data-gift="${nation.id}"><input data-cash="1" type="number" min="1" step="1" aria-label="Million to add to ${nation.label}"><button type="submit">Add to ${nation.label}</button></form>`).join("") : "";
+    const deciding = state.banner.actor === player.seat;
+    return `<article class="panel ${deciding ? "deciding" : ""}">
+      <h2>${player.name}</h2>
+      <p>Seat ${player.seat + 1} of ${state.players.length}</p>
+      <p>${deciding ? "Deciding" : (state.banner.waiting && !deciding ? "Waiting" : "")}</p>
+      <h3>Bonds</h3>${bondHtml}
+      <p>${player.nations.length ? `Nation cards: ${player.nations.join(", ")}` : "No nation card"}</p>
+      ${player.investor ? "<p>Investor</p>" : ""}
+      ${player.swiss ? "<p>Swiss Bank</p>" : ""}
+      <div class="cash" data-cash="1">${cashText}</div>
+      ${adds}
+    </article>`;
+  }).join("");
+  root.querySelectorAll("[data-gift]").forEach((form) => {
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const amount = Number(form.querySelector("input").value);
+      if (!Number.isInteger(amount) || amount < 1) return;
+      send(`gift:${form.dataset.gift}:${amount}`);
+    });
+  });
+}
+
+function renderLog() {
+  document.getElementById("log").innerHTML = state ? `<ol>${state.log.map((line) => `<li>${line}</li>`).join("")}</ol>` : "";
+  document.getElementById("limit").textContent = state ? state.limit : "Start a game to see the limits of this test.";
+  if (state && state.scores) {
+    document.getElementById("log").insertAdjacentHTML("beforeend", `<p>${state.scores.map((row) => `${row.name} ${row.total} (bonds ${row.bonds}, cash ${row.cash})`).join("; ")}</p>`);
+  }
+}
+
+function render() {
+  renderBanner();
+  renderTrack();
+  renderMap();
+  renderRondel();
+  renderTax();
+  renderTrays();
+  renderPanels();
+  renderLog();
+}
+
+render();
+</script>
+</body>
+</html>
