@@ -28,8 +28,14 @@ Gmail search for Studio, SFTP, and `studio.boardgamearena.com` returned these tw
 - https://boardgamearena.com/forum/viewtopic.php?f=12&t=15232 redirected to a page shell. The post text was retrieved from https://forum.boardgamearena.com/viewtopic.php?f=12&t=15232&lang=en. The post says to email studio@boardgamearena.com about the license except for smaller learning projects.
 - https://en.doc.boardgamearena.com/index.php?title=Pre-release_checklist&action=raw — license-to-alpha sentence, image size limits, and the Request ALPHA status button were read
 - https://en.doc.boardgamearena.com/index.php?title=Tools_and_tips_of_BGA_Studio&action=raw — port 2022 and the note that an uploaded SSH key disables password login were read
-- https://studio.boardgamearena.com/licensing — not opened. It requires a Studio login
-- https://studio.boardgamearena.com/projects — not opened. It requires a Studio login
+- https://studio.boardgamearena.com/licensing — opened 2026-10-15 after a website login. The page is a script shell. The data call was `POST /licensing/licensing/getLicensingPageData.html`.
+- https://studio.boardgamearena.com/projects — opened the same way. The data call was `POST /projects/projects/getProjectsPageData.html`.
+- Managed games for the logged-in account: `POST /studio/studio/getManagedGamesPageData.html`. The `games` array was empty and `userConfirmedBeingDev` was false.
+- Login call: `POST /account/auth/loginUserWithPassword.html` as the Credential Manager user `ciscokidryan0`. The response `username` was CiscoKidRyan0 and `success` was true. The password was not saved.
+
+## FileZilla site entry
+
+Read from `%APPDATA%\FileZilla\sitemanager.xml` on 2026-10-15. The file was not modified. The `BGA Studio` server element stores Host `1.studio.boardgamearena.com`, Port `2022`, Protocol `1`, User `CiscoKidRyan`, Logontype `5`, the `bga-development-rsa-key` path, and this Dropbox folder as LocalDir. Its comment says the remote home is `/`. RemoteDir is stored as `1 0`. The user said a live key connection listed `/` and the folder was empty. A second server element named MacMini is in the same file. Its host and user were not copied into this repository.
 
 ## Presentation PDFs linked from the Studio page
 
