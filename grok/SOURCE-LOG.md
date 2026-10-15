@@ -33,6 +33,10 @@ Gmail search for Studio, SFTP, and `studio.boardgamearena.com` returned these tw
 - Managed games for the logged-in account: `POST /studio/studio/getManagedGamesPageData.html`. The `games` array was empty and `userConfirmedBeingDev` was false.
 - Login call: `POST /account/auth/loginUserWithPassword.html` as the Credential Manager user `ciscokidryan0`. The response `username` was CiscoKidRyan0 and `success` was true. The password was not saved.
 
+## Sent mail
+
+- Gmail message `1a1402a52478094f`, Thu 15 Oct 2026 10:24:37 -0500, from ryanhocking@gmail.com to studio@boardgamearena.com, subject "License check for Imperial 2030 (BoardGameGeek 54138)". Read back from Gmail with label SENT. The body is saved as `grok/sent/2026-10-15-studio-license.txt`.
+
 ## FileZilla site entry
 
 Read from `%APPDATA%\FileZilla\sitemanager.xml` on 2026-10-15. The file was not modified. The `BGA Studio` server element stores Host `1.studio.boardgamearena.com`, Port `2022`, Protocol `1`, User `CiscoKidRyan`, Logontype `5`, the `bga-development-rsa-key` path, and this Dropbox folder as LocalDir. Its comment says the remote home is `/`. RemoteDir is stored as `1 0`. The user said a live key connection listed `/` and the folder was empty. A second server element named MacMini is in the same file. Its host and user were not copied into this repository.

@@ -1,0 +1,21 @@
+From: ryanhocking@gmail.com
+To: studio@boardgamearena.com
+Date: Thu, 15 Oct 2026 10:24:37 -0500
+Subject: License check for Imperial 2030 (BoardGameGeek 54138)
+Gmail message id: 1a1402a52478094f
+Labels: SENT
+
+Hello,
+
+I am Ryan Hocking (ryanhocking@gmail.com). My Board Game Arena Studio website account is CiscoKidRyan0. The licensing page for that login shows the developer username CiscoKidRyan.
+
+I want to adapt Imperial 2030 on BGA Studio. The BoardGameGeek page is https://boardgamegeek.com/boardgame/54138/imperial-2030/ and the id is 54138. That record lists the designer as Mac Gerdts, the primary publisher as PD-Verlag, and Rio Grande Games among the other publishers. The year published there is 2009.
+
+Your developer welcome post says that, except for smaller learning projects, we should check with you about the license by emailing studio@boardgamearena.com.
+
+I signed in to Studio on 15 October 2026 and opened the licensing and project lists. The licensing games list returned to this account had 2,265 entries. It did not include a game named Imperial 2030 or BoardGameGeek id 54138. The project list returned the same day had 2,662 entries and did not include a project for this title. This account has no managed Studio project yet.
+
+Please tell me whether BGA has a license for Imperial 2030, and whether I should create the Studio project.
+
+Thank you,
+Ryan Hocking

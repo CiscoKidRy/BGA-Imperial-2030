@@ -245,7 +245,7 @@ The title is absent, so do not create it yet. These retrieved instructions are i
 - The pre-release checklist says: "BGA must have a license for the game for a project to be moved to production, even to alpha."
 - The welcome forum post at https://forum.boardgamearena.com/viewtopic.php?f=12&t=15232&lang=en says: "Except for smaller learning projects, please check with us about the license by sending an email at studio@boardgamearena.com." It also says "Start small!" and gives Through the Ages as the example of a game not to start with. It says to set `bgg_id` from the BoardGameGeek URL. The current file reference names `gameinfos.jsonc`. The 2020 post names `gameinfos.inc.php`. Use the field the generated project actually contains. For this game the id in the URL and in geekitems `objectid` is 54138.
 
-The user decides whether to email studio@boardgamearena.com before any Imperial project. This plan does not send that email.
+On 15 October 2026 the user asked to send that email. It was sent from ryanhocking@gmail.com to studio@boardgamearena.com at 10:24:37 -0500. Gmail message id `1a1402a52478094f`. The subject is "License check for Imperial 2030 (BoardGameGeek 54138)". The sent text is `grok/sent/2026-10-15-studio-license.txt`. A read-back of that message showed label SENT and the same body. No reply has been retrieved. Do not create the Imperial project until that reply says to create it, or the title appears on the licensing list.
 
 ### 3. Read the rulebook — blocked on the download
 
@@ -308,7 +308,7 @@ Express start is the test button. First steps says not to use the ordinary Start
 
 ## Still open
 
-1. Whether to email studio@boardgamearena.com about a license. The forum post asks for that email except for smaller learning projects. This plan does not send the email.
+1. The reply from studio@boardgamearena.com to the 15 October 2026 license email. The sent copy is `grok/sent/2026-10-15-studio-license.txt`. No reply has been retrieved. The Imperial project stays uncreated until that reply says to create it, or the title appears on the licensing list.
 
 ## Assumptions not made
 
