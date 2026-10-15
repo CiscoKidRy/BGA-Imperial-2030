@@ -4,9 +4,9 @@ Working copy for adapting Imperial 2030 on Board Game Arena Studio.
 
 The game page is https://boardgamegeek.com/boardgame/54138/imperial-2030/.
 
-This repository is private. The BGA walkthrough says not to commit a file that contains an SFTP password, and not to commit original publisher graphics. Those files stay in the Dropbox folder and are listed in `.gitignore`.
+This repository is public. The BGA walkthrough says not to commit a file that contains an SFTP password, and not to commit original publisher graphics. Those files stay in the Dropbox folder and are listed in `.gitignore`.
 
-The request that opened this work said "gitlab" once. The repository URL in that request is GitHub. No GitLab project was created.
+Revisions are stored on GitHub and in the local working copy below. No GitLab remote is used.
 
 ## Where the files live
 

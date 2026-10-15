@@ -8,16 +8,16 @@ The confidence figures are interview judgments from the sources in `SOURCE-LOG.m
 -------- GATE STATUS --------
 Gate         | Status | Conf | Notes
 -------------|--------|------|------
-G1 SCOPE     | OPEN   | 70%  | Target game is Imperial 2030 on BGA. Release scope depends on the license check.
-G2 USERS     | OPEN   | 80%  | Studio test accounts are named. Publisher and designer join at BGA's review steps.
+G1 SCOPE     | OPEN   | 75%  | Target game is Imperial 2030 on BGA. The 2026-10-15 license check did not list it, so a live release still needs a license that is not on the list.
+G2 USERS     | OPEN   | 85%  | Website login as CiscoKidRyan0 succeeded. Publisher and designer join at BGA's review steps.
 G3 INPUTS    | OPEN   | 55%  | Geekitems, 28 files, and 35 videos are listed. The rules PDF was not retrieved.
 G4 OUTPUTS   | OPEN   | 60%  | This repo and the notes exist. The playable adaptation does not.
-G5 CONSTRAINTS | OPEN | 65%  | License page and existing-project page were not opened. Studio web password is unset in the email.
+G5 CONSTRAINTS | OPEN | 80%  | Licensing and project lists were opened. Imperial 2030 is on neither. The website password is in Credential Manager, not in the email.
 G6 EDGE CASES | OPEN  | 25%  | Rule exceptions are not known until the rulebook is read. BGA requires a zombie method per state in the current walkthrough.
 G7 SUCCESS   | OPEN   | 60%  | BGA's own lifecycle defines alpha, publisher approval, beta, and gold. No playtest of this adaptation has been run.
 -----------------------------
-AGGREGATE: about 59% (Target: 95%)
-BLOCKING QUESTIONS: 3
+AGGREGATE: about 63% (Target: 95%)
+BLOCKING QUESTIONS: 1
 READY TO WRITE GAME CODE: NO
 -----------------------------
 ```
@@ -97,11 +97,13 @@ One file description, file 349597, says the Spanish rondel was uploaded with per
 
 - Studio site: https://studio.boardgamearena.com/
 - SFTP: `1.studio.boardgamearena.com` port 2022, user `CiscoKidRyan`. Key login worked. Home directory had no project folder.
+- FileZilla Site Manager entry `BGA Studio` was read from `%APPDATA%\FileZilla\sitemanager.xml` on 2026-10-15. Stored fields: Host `1.studio.boardgamearena.com`, Port `2022`, Protocol `1`, User `CiscoKidRyan`, Logontype `5`, Keyfile `C:\Users\ryanh\Dropbox\Ryan\Key SSH API Private Public Security RSA\bga-development-rsa-key`, LocalDir this Dropbox folder. The entry comment says the remote home is `/`. The stored RemoteDir value is `1 0`. This session did not write that file. The user reported that FileZilla was connected with the key, did not ask for the Credential Manager password, and that a listing of `/` succeeded and was empty. The same file has a second entry named MacMini. Its host and user are not copied here, and that entry was not edited.
 - PhpMyAdmin: https://studio.boardgamearena.com/db/ with the database user named in the email.
 - Ten studio usernames: CiscoKidRyan0 through CiscoKidRyan9. The email says to log in as CiscoKidRyan0. It does not contain their website password. It links to the lost-password page.
+- The website password is in Windows Credential Manager, target `BGA Developer`, stored user `ciscokidryan0`. A login with that secret on 2026-10-15 returned `success` true and `username` CiscoKidRyan0. The secret is not in this repository.
 - A password-set email arrived the same day. Its link was not opened.
-- First steps says an SSH key can be uploaded in the control panel to avoid sending the password. The key that authenticated is the one documented in the keys folder. Fingerprint `SHA256:OuGrjcHp67UzVMIF7h/fRgLOu6TOHoDPt+OxiE7eCzM`.
-- Tools and tips, retrieved raw, says: "IMPORTANT NOTE: The ssh port is 2022" and "If you uploaded ssh key - PASSWORD method is automatically disabled, you can no longer use password". Password login was not tested after the key was uploaded.
+- First steps says an SSH key can be uploaded in the control panel to avoid sending the password. The key that authenticated is the one documented in the keys folder. Fingerprint `SHA256:OuGrjcHp67UzVMIF7h/fRgLOu6TOHoDPt+OxiE7eCzM`. The user said that public key is uploaded.
+- Tools and tips, retrieved raw, says: "IMPORTANT NOTE: The ssh port is 2022" and "If you uploaded ssh key - PASSWORD method is automatically disabled, you can no longer use password". Password SFTP was not tested after the key was uploaded. SFTP continues to use the key.
 
 ### Start path
 
@@ -110,6 +112,8 @@ The Studio page "Great, I'm in!" says to read the five presentations, then First
 First steps says the first project should be a tutorial, created from Control Panel / Manage games or https://studio.boardgamearena.com/studio#new-tutorial, with a name like "tutorialbob". It says it is too early to create a real game, and points to the walkthrough section "Select a First Game" if the developer does not want to wait.
 
 The walkthrough introduction says not to create a new game until at least one tutorial is complete.
+
+Those three pages are why an earlier draft asked whether the next Studio project should be Reversi. On 2026-10-15 the user rejected that question as the next step. This plan does not create a Reversi project. The sentences above stay here as the retrieved BGA text. They are not an instruction to open a tutorial project.
 
 The 8-steps PDF, page 4, says the second rule is to choose a simple game for a first adaptation, and that complex games are kept for experienced developers. The PDF does not classify Imperial 2030.
 
@@ -129,7 +133,7 @@ The 8-steps PDF, page 4, says the second rule is to choose a simple game for a f
 
 The walkthrough "Select a First Game" says: "Don't start a project until you are sure BGA have the licence for this game, or it will never be published!"
 
-Imperial 2030's BGG rank was not retrieved, so the "top 1000" branch is not decided from the data in this session. The license list and the project list were not opened.
+Imperial 2030's BGG rank was not retrieved, so the "top 1000" branch is not decided from the data in this session. The license list and the project list were opened on 2026-10-15. The result is in step 2.
 
 ### Lifecycle, from `BGA_game_Lifecycle`
 
@@ -217,19 +221,24 @@ Each implementation step ends with a counsel review, a commit, a push, a pull re
 
 Recorded in the keys folder and in `RESUME.md`.
 
-### 2. License and existing project — blocked
+### 2. License and existing project — checked 2026-10-15, title absent
 
-Sign in as CiscoKidRyan0.
+Signed in at https://studio.boardgamearena.com/ as CiscoKidRyan0, using the Credential Manager secret named in the access section. The calls were `POST /licensing/licensing/getLicensingPageData.html`, `POST /projects/projects/getProjectsPageData.html`, and `POST /studio/studio/getManagedGamesPageData.html`. Each returned `status` 1.
 
-Record, without guessing:
+Recorded from those responses:
 
-- Whether Imperial 2030 appears on https://studio.boardgamearena.com/licensing
-- Whether a project with that name appears on https://studio.boardgamearena.com/projects, and the status the page shows
-- Whether the page offers Request Art Files for this title
+- The licensing `games` array had 2265 entries. The count fields were `licenses-available` 1175, `licenses-published` 925, and `licenses-refused` 140. The response does not say that those three counts partition the array.
+- No licensing entry had `game-name` Imperial 2030 or `game-bgg-id` 54138. No entry had `game-bgg-id` 24181, the geekitems id of the earlier game Imperial.
+- The same array does contain Concordia, `game-bgg-id` 124361, designer Mac Gerdts, publisher PD-Verlag, `license-refused` 0, `published` 0. That row is a different game. It shows the designer and publisher strings are present for other titles.
+- Names containing "imperial" were Imperial Settlers (`game-bgg-id` 154203) and Imperial Steam (`game-bgg-id` 338760) on the licensing list, and projects `imperialsettlers`, `imperialsteam`, and `imperialminers` on the project list. None of those is Imperial 2030.
+- The projects `games` array had 2662 entries. None had `name` or `licensing-game-name` Imperial 2030, and none had the name `imperial2030`.
+- Managed games for this account was an empty array. `userConfirmedBeingDev` was false.
+- The licensing response's `developer-username` was CiscoKidRyan.
+- The licensing `games` array has no Imperial 2030 entry. Request Art Files was not checked as its own control. Unavailability is only an inference from that missing entry.
 
-If a project is already active, the license page says to propose joining it instead of starting another.
+If a project is already active, the license page says to propose joining it instead of starting another. No Imperial 2030 project was in the list.
 
-If the title is absent, stop before creating it. Three retrieved instructions are in force together:
+The title is absent, so do not create it yet. These retrieved instructions are in force together:
 
 - The license page allows a Studio project and says live submission is rejected without a license.
 - The walkthrough says not to start until the license is certain, or the game will never be published.
@@ -248,9 +257,9 @@ Use the English quick intro, the rules-in-brief PDF, and the setup player aid as
 
 Watch the two rules videos only as a check, and write down where they differ from the book.
 
-### 4. Tutorial — after step 2, before Imperial code
+### 4. Tutorial — not the next step
 
-Create the tutorial project from the control panel, as First steps describes. Sync it with SFTP into a subfolder of this Dropbox directory. Run Express start in Manual mode. Change one visible string, refresh, and confirm the change. Commit that exercise on GitHub without the SFTP password. This is the tutorial the Studio page recommends, not a replacement for Imperial 2030.
+Do not create a Reversi project or another tutorial project. The user answered the earlier question on 2026-10-15 by asking why Reversi was proposed. The reason is the Studio text quoted under "Start path". That text stays in the plan. It does not authorize a tutorial project.
 
 Get read-only copies of published projects from https://studio.boardgamearena.com/projects with "Get readonly access" when a concrete pattern is needed. First steps says the folder then appears in the SFTP home and is read-only.
 
@@ -291,17 +300,21 @@ Express start is the test button. First steps says not to use the ordinary Start
 5. Beta request after that approval and the reviewer approvals the lifecycle page describes.
 6. Gold when the publisher emails publishers@boardgamearena.com.
 
-## Blocking questions
+## Decisions recorded 2026-10-15
 
-1. Is Imperial 2030 on the Studio available-licenses page, and is a project for it already listed?
-2. Should the next Studio project be the Reversi tutorial, which is what First steps and the walkthrough require before a real game, or should that wait until question 1 is answered?
-3. The GitHub repository was created private. Say if it should be public.
+1. Imperial 2030 is not on the licensing `games` array and has no project on the projects array. The check is step 2.
+2. Reversi is not the next project. The question existed because First steps and the walkthrough say to finish a tutorial first. The user rejected that as this project's next step.
+3. This GitHub repository is public. Revisions use GitHub only.
+
+## Still open
+
+1. Whether to email studio@boardgamearena.com about a license. The forum post asks for that email except for smaller learning projects. This plan does not send the email.
 
 ## Assumptions not made
 
-- No claim that BGA already has, or lacks, a license for this title.
+- No claim that BGA holds a license that is missing from the retrieved list. The licensing `games` array returned on 2026-10-15 does not contain Imperial 2030.
 - No claim that the BGG rank is inside or outside the top 1000.
 - No claim that the short description or the differences list is the full rules.
 - No claim that the password-set email was requested by the user. It was not used.
-- No GitLab project. The create URL was GitHub.
+- No GitLab project. The user said to use GitHub only. The repository is public.
 - No game code, and no project folder created by hand on the SFTP server.

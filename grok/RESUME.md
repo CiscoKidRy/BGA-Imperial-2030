@@ -10,23 +10,29 @@ Build Imperial 2030, BoardGameGeek thing 54138, as a Board Game Arena Studio gam
 
 ## What is done
 
-- RSA key created and SFTP login tested. See the connection note in the keys folder. The remote home directory was `/` and contained no project folder.
+- RSA key created and SFTP key login tested. See the connection note in the keys folder. The remote home directory was `/` and contained no project folder. The user said the public key is uploaded. Tools and tips says that disables password SFTP.
+- FileZilla Site Manager entry `BGA Studio` uses that key, host, port, and user. The user reported a live listing of `/` that was empty, and that FileZilla did not ask for the website password. A separate Site Manager entry named MacMini was not edited.
 - Two BGA Studio emails were saved under `source-email/` (not in git). The welcome email is the one with SFTP and database values. The later email is a password-set link and was not opened.
+- The Studio website password is in Windows Credential Manager, target `BGA Developer`. A login as CiscoKidRyan0 succeeded on 2026-10-15. The password was not written into this repository.
+- Licensing and project data were retrieved the same day. Imperial 2030 is not in either list. This account's managed-games array is empty. The numbers and the other titles that matched a search for "imperial" are in `SDLC-PLAN.md` step 2.
 - BGA Studio wiki pages and four of the five linked presentations were read to the extent recorded in `SOURCE-LOG.md`.
 - BoardGameGeek identity, files, videos, and image captions were retrieved to the extent recorded in `SOURCE-LOG.md` and `flock/03-bgg-imperial-2030-catalog.md`.
-- This repository and the working agreement in `README.md` were created.
+- This repository and the working agreement in `README.md` were created. The repository is public. Revisions use GitHub only.
+- The user rejected a Reversi tutorial as the next step. No tutorial project was created.
 - No Studio game project was created. No game code was written. The English rules PDF was not downloaded.
 
 ## What is blocked
 
-Studio web login has no password in the welcome email. The available-licenses page and the current-projects page were not opened. The English rules file on BoardGameGeek returned HTTP 403. The welcome forum post returned a page shell, not the post.
+The license list does not contain Imperial 2030. The walkthrough says not to start a project until BGA has the licence, or the game will not be published. The license page allows a Studio project and says live submission is rejected without a license. The pre-release checklist requires a license even for alpha. The user has not asked to email studio@boardgamearena.com, and this plan does not send that email.
 
-Do not create an Imperial 2030 project on Studio, and do not write rules code, until those gaps are closed or the user explicitly chooses to proceed with them still open. The walkthrough says not to start a project until BGA has the licence, or the game will not be published.
+The English rules file on BoardGameGeek returned HTTP 403. The BGG rank was not retrieved.
+
+Do not create an Imperial 2030 project on Studio, and do not write rules code, until the user explicitly chooses to proceed with the license still absent, or until the title appears on the license list.
 
 ## Next session
 
 1. Read `SDLC-PLAN.md` gate table.
-2. Ask the user to sign in at https://studio.boardgamearena.com/ as CiscoKidRyan0, or to say that a password is ready.
-3. Check https://studio.boardgamearena.com/licensing and https://studio.boardgamearena.com/projects for Imperial 2030. Write down only what those pages show.
-4. Do not open the password-set link in message `1a13ff0aa56e26e9` unless the user asks.
-5. Continue with the first unfinished step in the SDLC plan.
+2. Do not create a Reversi or other tutorial project.
+3. Do not open the password-set link in message `1a13ff0aa56e26e9` unless the user asks.
+4. Wait for a decision on the studio@ license email before creating the Imperial project.
+5. The English rules PDF is still the next source to obtain. It is not in git.
