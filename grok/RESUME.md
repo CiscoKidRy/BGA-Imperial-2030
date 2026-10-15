@@ -23,16 +23,16 @@ Build Imperial 2030, BoardGameGeek thing 54138, as a Board Game Arena Studio gam
 
 ## What is blocked
 
-The license list does not contain Imperial 2030. The walkthrough says not to start a project until BGA has the licence, or the game will not be published. The license page allows a Studio project and says live submission is rejected without a license. The pre-release checklist requires a license even for alpha. The user has not asked to email studio@boardgamearena.com, and this plan does not send that email.
+The license list does not contain Imperial 2030. The walkthrough says not to start a project until BGA has the licence, or the game will not be published. The license page allows a Studio project and says live submission is rejected without a license. The pre-release checklist requires a license even for alpha. On 15 October 2026 a license email was sent from ryanhocking@gmail.com to studio@boardgamearena.com. Gmail id `1a1402a52478094f`. The copy is `grok/sent/2026-10-15-studio-license.txt`. No reply has been retrieved.
 
 The English rules file on BoardGameGeek returned HTTP 403. The BGG rank was not retrieved.
 
-Do not create an Imperial 2030 project on Studio, and do not write rules code, until the user explicitly chooses to proceed with the license still absent, or until the title appears on the license list.
+Do not create an Imperial 2030 project on Studio, and do not write rules code, until the reply to message `1a1402a52478094f` says to create it, or until the title appears on the licensing list.
 
 ## Next session
 
 1. Read `SDLC-PLAN.md` gate table.
 2. Do not create a Reversi or other tutorial project.
 3. Do not open the password-set link in message `1a13ff0aa56e26e9` unless the user asks.
-4. Wait for a decision on the studio@ license email before creating the Imperial project.
+4. Wait for the reply to the studio@ license email before creating the Imperial project. Do not send a second copy unless the user asks.
 5. The English rules PDF is still the next source to obtain. It is not in git.
