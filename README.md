@@ -8,6 +8,8 @@ This repository is public. The BGA walkthrough says not to commit a file that co
 
 Revisions are stored on GitHub and in the local working copy below. No GitLab remote is used.
 
+The Studio project is `imperialtwothousandthirty`. It was created private on 15 October 2026 so the work can be learned on Studio. It is not deployed. Do not request alpha, and do not switch it to public, unless a later note says the license reply allows that.
+
 ## Where the files live
 
 Local working copy:

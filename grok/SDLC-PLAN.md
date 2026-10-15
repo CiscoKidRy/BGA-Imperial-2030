@@ -245,7 +245,7 @@ The title is absent, so do not create it yet. These retrieved instructions are i
 - The pre-release checklist says: "BGA must have a license for the game for a project to be moved to production, even to alpha."
 - The welcome forum post at https://forum.boardgamearena.com/viewtopic.php?f=12&t=15232&lang=en says: "Except for smaller learning projects, please check with us about the license by sending an email at studio@boardgamearena.com." It also says "Start small!" and gives Through the Ages as the example of a game not to start with. It says to set `bgg_id` from the BoardGameGeek URL. The current file reference names `gameinfos.jsonc`. The 2020 post names `gameinfos.inc.php`. Use the field the generated project actually contains. For this game the id in the URL and in geekitems `objectid` is 54138.
 
-On 15 October 2026 the user asked to send that email. It was sent from ryanhocking@gmail.com to studio@boardgamearena.com at 10:24:37 -0500. Gmail message id `1a1402a52478094f`. The subject is "License check for Imperial 2030 (BoardGameGeek 54138)". The sent text is `grok/sent/2026-10-15-studio-license.txt`. A read-back of that message showed label SENT and the same body. No reply has been retrieved. Do not create the Imperial project until that reply says to create it, or the title appears on the licensing list.
+On 15 October 2026 the user asked to send that email. It was sent from ryanhocking@gmail.com to studio@boardgamearena.com at 10:24:37 -0500. Gmail message id `1a1402a52478094f`. The subject is "License check for Imperial 2030 (BoardGameGeek 54138)". The sent text is `grok/sent/2026-10-15-studio-license.txt`. A read-back of that message showed label SENT and the same body. No reply has been retrieved. Later the same day the user asked to start a private learning project and not to publish. That project is step 5. Publishing still waits for the reply.
 
 ### 3. Read the rulebook — blocked on the download
 
@@ -263,11 +263,19 @@ Do not create a Reversi project or another tutorial project. The user answered t
 
 Get read-only copies of published projects from https://studio.boardgamearena.com/projects with "Get readonly access" when a concrete pattern is needed. First steps says the folder then appears in the SFTP home and is read-only.
 
-### 5. Create the Imperial project — only if step 2 allows it
+### 5. Create the Imperial project — created private on 2026-10-15
 
-Create it from Control Panel / Manage games. Do not upload a handmade skeleton first. The First steps page says the project folder appears in the SFTP home after creation.
+On 15 October 2026 the user asked to start development in order to learn Studio, and said not to publish. The create form at `POST /admin/studio/newproject.html` was used. Its script says a project name can contain only letters, in CamelCase, with a maximum of 32 characters, and gives RaceForTheGalaxy as the example. `Imperial2030` is rejected by that rule because it contains digits. The name sent was `ImperialTwoThousandThirty`. The response text was `Create new project ImperialTwoThousandThirty (imperialtwothousandthirty)`. The folder on SFTP is `imperialtwothousandthirty`.
 
-Download that folder into this Dropbox directory. Set automated sync. First steps says manual copying is a non-starter.
+The same request sent `bgg_id=54138`, `visibility=private`, and `confirmedBeingDev=true`. The checkbox label on that form is "I am a developer". The form also says a project can be created and development can start immediately, and that the publisher agreement is needed before the game is released. It recommends waiting for that agreement. The user chose to start and not to publish.
+
+The creation log ended with "Done!". Studio committed the generated files as SVN revision 340706. HAL reported all good for images, PHP, SQL, JS, and CSS. Two `cp` lines said `emptygame` had no png or jpg files. Access was given to CiscoKidRyan. Managed games for this account now has one game, `imperialtwothousandthirty`, with `prod-version` `-not deployed-` and `prod-status` null. A search of the projects list for that exact name returned no row. No alpha request was sent, and no production deploy was sent.
+
+The folder was downloaded by SFTP into this directory. `gameinfos.jsonc` has `bgg_id` 54138. The other fields are still the generated template, including `game_name` "My Great Game" and `players` 2, 3, and 4. The copyright lines still say `<Your name here>`. No Imperial 2030 rules have been written into the code.
+
+Do not upload a handmade skeleton over this folder. Do not request alpha. Do not change `visibility` to public unless the license reply says the game may be published.
+
+Set automated sync. First steps says manual copying is a non-starter. FileZilla's `BGA Studio` site already uses this Dropbox folder as LocalDir.
 
 Set the project status text to the combination the walkthrough lists that matches the facts at the time: "development started", "waiting for the license", "waiting for graphics".
 
@@ -308,7 +316,7 @@ Express start is the test button. First steps says not to use the ordinary Start
 
 ## Still open
 
-1. The reply from studio@boardgamearena.com to the 15 October 2026 license email. The sent copy is `grok/sent/2026-10-15-studio-license.txt`. No reply has been retrieved. The Imperial project stays uncreated until that reply says to create it, or the title appears on the licensing list.
+1. The reply from studio@boardgamearena.com to the 15 October 2026 license email. The sent copy is `grok/sent/2026-10-15-studio-license.txt`. No reply has been retrieved. The private Studio project may stay in development. It stays unpublished until that reply says it may be published.
 
 ## Assumptions not made
 

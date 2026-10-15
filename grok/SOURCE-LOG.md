@@ -33,6 +33,14 @@ Gmail search for Studio, SFTP, and `studio.boardgamearena.com` returned these tw
 - Managed games for the logged-in account: `POST /studio/studio/getManagedGamesPageData.html`. The `games` array was empty and `userConfirmedBeingDev` was false.
 - Login call: `POST /account/auth/loginUserWithPassword.html` as the Credential Manager user `ciscokidryan0`. The response `username` was CiscoKidRyan0 and `success` was true. The password was not saved.
 
+## Studio project creation
+
+- 15 October 2026, `POST /admin/studio/newproject.html` with `gamename=ImperialTwoThousandThirty`, `bgg_id=54138`, `visibility=private`, `confirmedBeingDev=true`.
+- The response ended with "Done!". It named the folder `imperialtwothousandthirty`, recorded SVN revision 340706, and said access was given to CiscoKidRyan.
+- `POST /studio/studio/getManagedGamesPageData.html` then returned one game, `prod-version` `-not deployed-`, `prod-status` null.
+- A search of `POST /projects/projects/getProjectsPageData.html` for the name `imperialtwothousandthirty` returned no row.
+- SFTP `get -r imperialtwothousandthirty` saved the folder in this directory. `gameinfos.jsonc` contains `bgg_id` 54138 and the template title "My Great Game".
+
 ## Sent mail
 
 - Gmail message `1a1402a52478094f`, Thu 15 Oct 2026 10:24:37 -0500, from ryanhocking@gmail.com to studio@boardgamearena.com, subject "License check for Imperial 2030 (BoardGameGeek 54138)". Read back from Gmail with label SENT. The body is saved as `grok/sent/2026-10-15-studio-license.txt`.
