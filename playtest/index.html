@@ -104,18 +104,86 @@
   .steps .now { background: var(--phase); color: var(--cream); box-shadow: inset 4px 0 0 var(--gold); }
   .steps .done { color: #E6E0D4; }
   .steps .later, .steps .skipped { color: var(--muted); }
-  #track-wrap { padding: 8px 16px 0; overflow-x: auto; }
-  #factors, #track { display: grid; grid-template-columns: repeat(26, minmax(44px, 1fr)); gap: 2px; min-width: 1144px; }
-  #factors span, .cell { text-align: center; font-size: 12px; font-variant-numeric: tabular-nums; }
-  .cell { min-height: 44px; border: 1px solid var(--line); background: var(--paper); padding-top: 2px; }
-  .cell .marks { display: flex; justify-content: center; gap: 2px; }
-  main, aside, .layout, .map-row, #map-frame, #track-wrap, #tax-chart, #trays, #action-rondel { min-width: 0; max-width: 100%; }
+  html, body { overflow-x: hidden; }
+  main, aside, .layout, #board-scroll, #tax-chart, #trays { min-width: 0; max-width: 100%; }
   .layout { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 16px; padding: 16px; }
-  .map-row { display: grid; grid-template-columns: minmax(0, 1fr) 384px; gap: 16px; align-items: start; }
-  #map-frame { overflow: auto; border: 1px solid var(--line); background: #F7F4EE; min-height: 420px; }
-  #map { width: 1100px; padding: 12px; display: grid; grid-template-columns: 1.1fr 1.3fr 1fr 1.2fr; gap: 8px; }
-  .region { min-height: 72px; padding: 8px; border: 1px solid var(--ink); }
-  .region h2, .region h3 { margin: 0 0 6px; font-size: 16px; }
+  #board-scroll { overflow: auto; background: #12304F; border: 1px solid #12304F; }
+  #board {
+    position: relative;
+    width: 100%;
+    min-width: 880px;
+    aspect-ratio: 1440 / 900;
+    height: auto;
+    background: #8ECAE6;
+    border: 14px solid #1A365D;
+  }
+  #map { position: absolute; inset: 0; z-index: 1; }
+  #lands { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+  #track-wrap {
+    position: absolute; z-index: 6; left: 2%; top: 1.5%; width: 96%;
+    background: #1A6E86; padding: 4px;
+  }
+  #factors, #track { display: grid; grid-template-columns: 1.4fr repeat(24, 1fr) 1.4fr; gap: 1px; }
+  #factors span, .cell { text-align: center; font-size: 12px; font-variant-numeric: tabular-nums; color: #F4F0E6; }
+  #factors .band { grid-column: span 5; }
+  #factors .band4 { grid-column: span 4; }
+  #factors .end { grid-column: span 1; }
+  .cell { min-height: 44px; background: #1A5368; padding-top: 2px; }
+  .cell.zero, .cell.edge { background: #7FCBD6; color: #1A1A1A; }
+  .cell.last { background: #D7EEF0; color: #C47A12; font-weight: 700; }
+  .cell .marks { display: flex; justify-content: center; gap: 2px; }
+  .spot, .sea-btn, .neutral-btn {
+    position: absolute; z-index: 3; min-width: 44px; min-height: 44px;
+    font-size: 11px; line-height: 1.15; text-align: center;
+  }
+  .spot {
+    width: 44px; height: 44px; padding: 0; overflow: visible;
+    transform: translate(-50%, -50%);
+    background: transparent; color: #1A1A1A; border: 0;
+  }
+  .spot .site { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+  .city-name {
+    position: absolute; z-index: 1; white-space: nowrap; pointer-events: none;
+    font-size: 10px; font-weight: 700; line-height: 1.15; color: #1A1A1A;
+    background: rgba(255,255,255,0.92); padding: 0 3px;
+  }
+  .spot .piece-row { position: absolute; left: 50%; top: 30px; transform: translateX(-50%); }
+  .sea-btn, .neutral-btn {
+    display: flex; align-items: center; justify-content: center; padding: 2px;
+    background: transparent; border: 0; font-weight: 700;
+  }
+  .sea-btn { z-index: 1; color: #14384A; }
+  .neutral-btn { z-index: 2; color: #1A1A1A; }
+  .spot.legal, .sea-btn.legal, .neutral-btn.legal { outline: 2px solid #F4F0E6; box-shadow: 0 0 0 1px #1A1A1A; }
+  .place-label, .cross-land, .polar {
+    position: absolute; z-index: 2; pointer-events: none; color: #1A1A1A; font-size: 11px; font-weight: 600;
+  }
+  .polar { background: #F7FBFF; border-radius: 40%; }
+  .cross-land {
+    width: 16px; height: 16px; background: #FFFFFF; color: #B42318;
+    font-weight: 700; line-height: 16px; text-align: center;
+  }
+  .site { display: inline-block; width: 10px; height: 10px; border: 2px solid #6B4A2A; vertical-align: middle; }
+  .site.circle { border-radius: 50%; background: transparent; }
+  .site.square { background: currentColor; }
+  .site.harbor { border-color: #2E8AA8; color: #7EC8E3; }
+  .site.armament { border-color: #6B3A1F; color: #8A5A32; }
+  .factory { display: inline-block; width: 12px; height: 12px; margin: 0 1px; }
+  .factory.armament { background: #8A5A32; }
+  .factory.harbor { background: #7EC8E3; border: 1px solid #1A5368; }
+  .army, .pin { display: inline-block; min-width: 16px; padding: 0 2px; margin: 0 1px; font-size: 10px; font-weight: 700; }
+  .ship { width: 16px; height: 8px; vertical-align: middle; }
+  #tax-slot { position: absolute; z-index: 4; left: 36%; top: 78%; width: 36%; background: #F7F4EE; }
+  #wheel-slot { position: absolute; z-index: 5; left: 1%; top: 62%; width: 18%; }
+  .wheel { position: relative; width: 100%; aspect-ratio: 1; height: auto; }
+  .wheel svg { position: absolute; inset: 0; }
+  .wheel svg text { font-family: "Segoe UI", sans-serif; }
+  .wheel svg path[data-action] { cursor: pointer; }
+  #tax-chart table { border-collapse: collapse; width: 100%; }
+  #tax-chart th, #tax-chart td { border: 1px solid var(--ink); text-align: center; font-size: 10px; height: 22px; }
+  #tax-chart .hot { background: var(--cream); outline: 2px solid var(--ink); }
+  #tax-chart caption { font-size: 10px; text-align: left; }
+  #trays { display: grid; grid-template-columns: repeat(6, minmax(120px, 1fr)); gap: 4px; width: 100%; min-width: 880px; margin-top: 8px; }
   .label {
     display: inline-block;
     background: var(--paper);
@@ -123,64 +191,7 @@
     border: 1px solid var(--ink);
     padding: 2px 6px;
   }
-  .sea { background: var(--sea); }
-  .neutral { background: var(--neutral); }
-  .home { min-height: 160px; }
-  .cities, .piece-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
-  .city, .piece {
-    min-width: 44px;
-    min-height: 44px;
-    padding: 4px 8px;
-    background: var(--paper);
-    color: var(--ink);
-    border: 1px solid var(--ink);
-  }
-  .city.legal, .region.legal {
-    border: 3px solid var(--cream);
-    box-shadow: 0 0 0 1px var(--ink);
-  }
-  .swiss { background: var(--paper); }
-  .cross { width: 28px; height: 28px; position: relative; display: inline-block; vertical-align: middle; }
-  .cross::before, .cross::after { content: ""; position: absolute; background: #B42318; }
-  .cross::before { left: 11px; top: 0; width: 6px; height: 28px; }
-  .cross::after { left: 0; top: 11px; width: 28px; height: 6px; }
-  #action-rondel { border: 1px solid var(--ink); padding: 16px; background: var(--paper); }
-  #action-rondel h2 { margin: 0 0 8px; font-size: 16px; }
-  .caption { margin: 0 0 8px; font-size: 14px; }
-  .wheel-wrap { position: relative; width: 288px; height: 288px; margin: 0 auto 12px; }
-  .wheel {
-    width: 288px; height: 288px; border-radius: 50%;
-    border: 8px solid var(--ink);
-    background: conic-gradient(
-      #F4F0E6 0 45deg, #E7E1D6 45deg 90deg, #F4F0E6 90deg 135deg, #E7E1D6 135deg 180deg,
-      #F4F0E6 180deg 225deg, #E7E1D6 225deg 270deg, #F4F0E6 270deg 315deg, #E7E1D6 315deg 360deg
-    );
-  }
-  .hub {
-    position: absolute; left: 112px; top: 112px; width: 64px; height: 64px;
-    border-radius: 50%; background: var(--paper); border: 1px solid var(--ink);
-    font-size: 11px; text-align: center; padding-top: 10px;
-  }
-  .wedge-label {
-    position: absolute; width: 44px; height: 44px; margin-left: -22px; margin-top: -22px;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 600; background: transparent; border: 0; min-width: 44px;
-  }
-  .rondel-row {
-    display: grid;
-    grid-template-columns: 36px 1fr 88px 96px;
-    gap: 8px;
-    align-items: center;
-    min-height: 48px;
-    width: 100%;
-    margin-top: 4px;
-    text-align: left;
-  }
-  #tax-chart { margin-top: 16px; overflow-x: auto; }
-  #tax-chart table { border-collapse: collapse; width: 100%; min-width: 720px; }
-  #tax-chart th, #tax-chart td { border: 1px solid var(--ink); text-align: center; min-width: 44px; height: 44px; }
-  #tax-chart .hot { background: var(--cream); outline: 2px solid var(--ink); }
-  #trays { display: grid; grid-template-columns: repeat(6, minmax(140px, 1fr)); gap: 8px; margin-top: 16px; overflow-x: auto; }
+  .piece-row { display: flex; flex-wrap: wrap; gap: 2px; justify-content: center; }
   .tray { border: 1px solid var(--line); background: var(--paper); min-width: 140px; }
   .tray header { min-height: 44px; padding: 8px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--ink); }
   .tray.active { outline: 3px solid var(--ink); }
@@ -208,9 +219,8 @@
   .pat-vertical { background-image: repeating-linear-gradient(90deg, transparent 0 4px, rgba(255,255,255,.4) 4px 6px); }
   .pat-cross { background-image: repeating-linear-gradient(45deg, transparent 0 5px, rgba(255,255,255,.35) 5px 6px), repeating-linear-gradient(-45deg, transparent 0 5px, rgba(255,255,255,.35) 5px 6px); }
   @media (max-width: 959px) {
-    .layout, .map-row { grid-template-columns: 1fr; }
+    .layout { grid-template-columns: 1fr; }
     aside { width: auto; }
-    #map { width: 720px; }
   }
   @media (prefers-reduced-motion: reduce) {
     * { animation: none !important; }
@@ -223,18 +233,20 @@
     <div id="seats"></div>
   </div>
   <section id="next-action" aria-live="polite"></section>
-  <div id="track-wrap">
-    <div id="factors"></div>
-    <div id="track"></div>
-  </div>
   <div class="layout">
     <main>
-      <div class="map-row">
-        <div id="map-frame"><div id="map"></div></div>
-        <section id="action-rondel" hidden></section>
+      <div id="board-scroll">
+        <div id="board">
+          <div id="track-wrap">
+            <div id="factors"></div>
+            <div id="track"></div>
+          </div>
+          <div id="map"></div>
+          <div id="tax-slot"><div id="tax-chart"></div></div>
+          <div id="wheel-slot"></div>
+        </div>
+        <div id="trays"></div>
       </div>
-      <div id="tax-chart"></div>
-      <div id="trays"></div>
     </main>
     <aside>
       <div id="panels"></div>
@@ -254,8 +266,6 @@ const NATIONS = [
   ["europe", "Europe", "EU", "E", "#1D4E89", "#FFFFFF", "pat-cross"]
 ];
 const nationById = Object.fromEntries(NATIONS.map((row) => [row[0], row]));
-const FACTOR_BANDS = ["", "x0", "", "", "", "", "x1", "", "", "", "", "x2", "", "", "", "", "x3", "", "", "", "", "x4", "", "", "", "x5"];
-
 let gameId = null;
 let seat = 0;
 let state = null;
@@ -370,14 +380,15 @@ function renderBanner() {
 function renderTrack() {
   const factors = document.getElementById("factors");
   const track = document.getElementById("track");
-  factors.innerHTML = FACTOR_BANDS.map((text) => `<span>${text}</span>`).join("");
+  factors.innerHTML = `<span></span><span class="band">x0</span><span class="band">x1</span><span class="band">x2</span><span class="band">x3</span><span class="band band4">x4</span><span class="end">x5</span>`;
   const cells = [];
   for (let value = 0; value <= 25; value += 1) {
     const marks = (state ? state.nations : []).filter((nation) => nation.power === value).map((nation) => {
       const style = nationById[nation.id];
       return `<i class="swatch ${style[6]}" title="${style[1]} ${value}" style="background:${style[4]};color:${style[5]};width:18px;height:18px;border:1px solid #1A1A1A"></i>`;
     }).join("");
-    cells.push(`<div class="cell"><div>${value}</div><div class="marks">${marks}</div></div>`);
+    const tone = value === 0 ? " zero" : value === 25 ? " last" : [5, 10, 15, 20].includes(value) ? " edge" : "";
+    cells.push(`<div class="cell${tone}"><div>${value}</div><div class="marks">${marks}</div></div>`);
   }
   track.innerHTML = cells.join("");
 }
@@ -389,58 +400,27 @@ function pieces(regionName) {
   const bits = [];
   if (region.factory) {
     const word = region.factory === "armament" ? "armament" : "harbor";
-    bits.push(`<span class="piece">${word}</span>`);
+    bits.push(`<i class="factory ${word}" title="${word}"></i>`);
   }
   region.armies.forEach((army) => {
     const style = nationById[army.nation];
-    bits.push(`<span class="piece">${style[3]} ${army.hostile ? "hostile" : "friendly"}</span>`);
+    const stance = army.hostile ? "hostile" : "friendly";
+    bits.push(`<span class="army" style="background:${style[4]};color:${style[5]}" title="${style[1]} ${stance}">${style[3]} ${stance}</span>`);
   });
   region.fleets.forEach((fleet) => {
-    bits.push(`<span class="piece">${nationById[fleet][3]} fleet</span>`);
+    const style = nationById[fleet];
+    bits.push(`<span class="army" style="color:${style[4]}" title="${style[1]} fleet"><svg class="ship" viewBox="0 0 24 12" aria-hidden="true"><path fill="currentColor" d="M2 8 L12 2 L22 8 L18 11 L6 11 Z"/></svg>${style[3]}</span>`);
   });
-  if (region.flag) bits.push(`<span class="piece">${nationById[region.flag][3]} flag</span>`);
-  return bits.length ? `<div class="piece-row">${bits.join("")}</div>` : "";
+  if (region.flag) {
+    const style = nationById[region.flag];
+    bits.push(`<span class="pin" style="background:${style[4]};color:${style[5]}" title="${style[1]} flag">${style[3]}</span>`);
+  }
+  return bits.length ? `<span class="piece-row">${bits.join("")}</span>` : "";
 }
 
-function renderMap() {
-  const map = document.getElementById("map");
-  if (!state) { map.innerHTML = ""; return; }
-  const legalRegions = new Set(state.legal.filter((item) => item.region && item.enabled).map((item) => item.region));
-  const home = (id) => {
-    const style = nationById[id];
-    const cities = state.map.filter((row) => row.kind === "home" && row.nation === id);
-    return `<section class="region home" style="background:${style[4]}" data-nation="${id}">
-      <h2><span class="label">${style[3]} ${style[1]}</span></h2>
-      <div class="cities">${cities.map((city) => `<button type="button" class="city ${legalRegions.has(city.name) ? "legal" : ""}" data-region="${city.name}">${city.name}<br>${city.cityKind === "armament" ? "armament city" : "harbor city"}${pieces(city.name)}</button>`).join("")}</div>
-    </section>`;
-  };
-  const seaNames = ["North Pacific", "South Pacific", "Caribbean Sea", "North Atlantic", "Mediterranean Sea", "Gulf of Guinea", "South Atlantic", "Indian Ocean", "China Sea", "Sea of Japan", "Tasman Sea"];
-  const neutrals = state.map.filter((row) => row.kind === "neutral").map((row) => row.name);
-  map.innerHTML = `
-    <div class="region sea"><h3><span class="label">East-west links</span></h3>
-      <div class="cities">
-        <button type="button" data-pan="North Pacific">NP–SJ North Pacific and Sea of Japan</button>
-        <button type="button" data-pan="China Sea">NP–CS North Pacific and China Sea</button>
-        <button type="button" data-pan="South Pacific">SP–CS South Pacific and China Sea</button>
-        <button type="button" data-pan="Tasman Sea">SP–TS South Pacific and Tasman Sea</button>
-      </div>
-      <p>No north-south wrap. Panama's west mouth is not drawn.</p>
-    </div>
-    ${home("usa")}
-    ${seaNames.slice(0, 4).map((name) => `<div class="region sea ${legalRegions.has(name) ? "legal" : ""}" data-region="${name}"><h3><span class="label">${name}</span></h3>${pieces(name)}</div>`).join("")}
-    ${home("europe")}
-    <div class="region swiss"><h3><span class="label"><i class="cross" aria-hidden="true"></i> Switzerland</span></h3><p>No army enters.</p></div>
-    ${home("russia")}${home("china")}${home("india")}${home("brazil")}
-    ${seaNames.slice(4).map((name) => `<div class="region sea ${legalRegions.has(name) ? "legal" : ""}" data-region="${name}"><h3><span class="label">${name}</span></h3>${pieces(name)}</div>`).join("")}
-    ${neutrals.map((name) => `<div class="region neutral ${legalRegions.has(name) ? "legal" : ""}" data-region="${name}"><h3><span class="label">${name}</span></h3>${pieces(name)}</div>`).join("")}
-    <div class="region sea" id="position-card"><h3><span class="label">South Pacific rondel, position only</span></h3><p>1 to 3 fields for free. Choose on the action rondel.</p><div id="position-marks"></div></div>`;
-  map.querySelectorAll("[data-pan]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const target = map.querySelector(`[data-region="${button.dataset.pan}"]`);
-      if (target) target.scrollIntoView({block: "nearest", inline: "nearest"});
-    });
-  });
-  map.querySelectorAll("[data-region]").forEach((node) => {
+function bindRegions(root) {
+  if (!state) return;
+  root.querySelectorAll("[data-region]").forEach((node) => {
     node.addEventListener("click", () => {
       const matches = state.legal.filter((item) => item.region === node.dataset.region && item.enabled && item.role === "choice");
       if (matches.length === 1) send(matches[0].id);
@@ -451,48 +431,186 @@ function renderMap() {
       }
     });
   });
-  const marks = document.getElementById("position-marks");
-  marks.innerHTML = state.nations.map((nation) => `${nationById[nation.id][3]} ${nation.rondel || "in the hub"}`).join(" · ");
+}
+
+const CITIES = [
+  ["San Francisco", "harbor", 8, 40, "up"], ["Chicago", "armament", 14, 34, "left"], ["New York", "harbor", 19, 35, "right"], ["New Orleans", "harbor", 13, 44, "left"],
+  ["Manaus", "armament", 22, 60, "left"], ["Fortaleza", "harbor", 29, 60, "right"], ["Brasilia", "armament", 24, 66, "down"], ["Rio de Janeiro", "harbor", 27, 72, "down"],
+  ["London", "harbor", 41, 29, "up"], ["Paris", "armament", 43, 36, "left"], ["Berlin", "armament", 48, 30, "right"], ["Rome", "harbor", 47, 41, "left"],
+  ["Murmansk", "harbor", 51, 18, "down"], ["Moscow", "armament", 58, 30, "up"], ["Novosibirsk", "armament", 71, 25, "up"], ["Vladivostok", "harbor", 88, 33, "down"],
+  ["Urumqi", "armament", 68, 40, "up"], ["Beijing", "armament", 80, 37, "up"], ["Chongqing", "armament", 76, 45, "down"], ["Shanghai", "harbor", 85, 43, "down"],
+  ["New Delhi", "armament", 69, 49, "up"], ["Mumbai", "harbor", 66, 55, "left"], ["Kolkata", "harbor", 73, 52, "right"], ["Chennai", "armament", 70, 58, "down"]
+];
+const CITY_NUDGE = {
+  up: "left:50%;bottom:28px;transform:translateX(-50%)",
+  down: "left:50%;top:28px;transform:translateX(-50%)",
+  left: "right:28px;top:12px",
+  right: "left:28px;top:12px"
+};
+const SEAS = [
+  ["North Pacific", 1, 47, 8, 7], ["South Pacific", 1, 54, 16, 8], ["Caribbean Sea", 24, 48, 14, 8],
+  ["North Atlantic", 28, 20, 12, 14], ["Mediterranean Sea", 50, 41, 10, 5], ["Gulf of Guinea", 38, 58, 10, 7],
+  ["South Atlantic", 32, 66, 16, 8], ["Indian Ocean", 62, 62, 14, 10], ["China Sea", 84, 48, 10, 8],
+  ["Sea of Japan", 92, 28, 6, 10], ["Tasman Sea", 84, 70, 10, 6]
+];
+const NEUTRALS = [
+  ["Mexico", 8, 47, 11, 8], ["Colombia", 18, 52, 8, 7], ["North Africa", 40, 43, 16, 10], ["Turkey", 54, 36, 8, 7],
+  ["Indochina", 76, 50, 8, 8], ["Korea", 85, 36, 4, 6], ["Japan", 89, 38, 5, 8], ["Indonesia", 78, 58, 12, 6]
+];
+const LABELS = [
+  ["Alaska", 6, 16], ["Canada", 16, 22], ["Quebec", 26, 24], ["Peru", 15, 58], ["Argentina", 22, 78],
+  ["Ukraine", 50, 32], ["Kazakhstan", 62, 34], ["Mongolia", 74, 30], ["Afghanistan", 64, 42], ["Iran", 58, 44],
+  ["Near East", 54, 46], ["Guinea", 41, 54], ["Nigeria", 48, 56], ["East Africa", 56, 56], ["Congo", 49, 64],
+  ["South Africa", 51, 72], ["Philippines", 82, 54], ["Australia", 80, 66], ["New Zealand", 93, 74]
+];
+
+function renderMap() {
+  const map = document.getElementById("map");
+  const legalRegions = new Set(state ? state.legal.filter((item) => item.region && item.enabled).map((item) => item.region) : []);
+  const regionOf = (name) => state ? state.map.find((row) => row.name === name) : null;
+  const cities = CITIES.map(([name, kind, left, top, nudge]) => {
+    const region = regionOf(name);
+    const occupied = region && region.factory;
+    return `<button type="button" class="spot ${legalRegions.has(name) ? "legal" : ""}" data-region="${name}" style="left:${left}%;top:${top}%"><i class="site ${occupied ? "square" : "circle"} ${kind}"></i><span class="city-name" style="${CITY_NUDGE[nudge]}">${name}</span>${pieces(name)}</button>`;
+  }).join("");
+  const seas = SEAS.map(([name, left, top, width, height]) => `<button type="button" class="sea-btn ${legalRegions.has(name) ? "legal" : ""}" data-region="${name}" style="left:${left}%;top:${top}%;width:${width}%;height:${height}%">${name}${pieces(name)}</button>`).join("");
+  const neutrals = NEUTRALS.map(([name, left, top, width, height]) => `<button type="button" class="neutral-btn ${legalRegions.has(name) ? "legal" : ""}" data-region="${name}" style="left:${left}%;top:${top}%;width:${width}%;height:${height}%">${name}${pieces(name)}</button>`).join("");
+  const labels = LABELS.map(([name, left, top]) => `<span class="place-label" style="left:${left}%;top:${top}%">${name}</span>`).join("");
+  map.innerHTML = `
+    <svg id="lands" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+      <rect width="100" height="100" fill="#8ECAE6"/>
+      <ellipse cx="12" cy="13" rx="10" ry="4.5" fill="#F7FBFF"/>
+      <path fill="#E2C27A" stroke="#1A365D" stroke-width="0.35" d="M4 15 L12 14 L20 16 L30 20 L32 28 L22 30 L14 27 L6 26 Z"/>
+      <path fill="#C0392B" stroke="#1A365D" stroke-width="0.35" d="M5 32 L12 30 L20 31 L23 35 L21 40 L17 46 L11 47 L7 43 L4 37 Z"/>
+      <path fill="#E2C27A" stroke="#1A365D" stroke-width="0.35" d="M7 46 L16 45 L19 51 L14 55 L8 52 Z"/>
+      <path fill="#E2C27A" stroke="#1A365D" stroke-width="0.35" d="M17 51 L25 50 L26 58 L18 59 Z"/>
+      <path fill="#E2C27A" stroke="#1A365D" stroke-width="0.35" d="M20 61 L24 60 L24 74 L20 78 Z"/>
+      <path fill="#E2C27A" stroke="#1A365D" stroke-width="0.35" d="M20 74 L26 73 L27 83 L21 85 L20 78 Z"/>
+      <path fill="#1B7A32" stroke="#1A365D" stroke-width="0.35" d="M20 56 L31 55 L34 61 L33 69 L28 76 L21 75 L18 66 Z"/>
+      <path fill="#1D4E89" stroke="#1A365D" stroke-width="0.35" d="M38 24 L46 22 L53 26 L53 33 L49 37 L48 42 L44 42 L40 36 L38 29 Z"/>
+      <path fill="#E2C27A" stroke="#1A365D" stroke-width="0.35" d="M36 46 L58 45 L61 52 L58 64 L52 75 L43 77 L37 66 L34 52 Z"/>
+      <path fill="#7B3FA0" stroke="#1A365D" stroke-width="0.35" d="M48 16 L95 16 L95 30 L88 36 L74 31 L64 34 L54 36 L48 30 L47 20 Z"/>
+      <path fill="#E6B800" stroke="#1A365D" stroke-width="0.35" d="M65 34 L89 33 L91 42 L85 48 L73 47 L66 41 Z"/>
+      <path fill="#2C2C2C" stroke="#1A365D" stroke-width="0.35" d="M64 47 L77 46 L79 53 L73 61 L66 59 L63 52 Z"/>
+      <path fill="#E2C27A" stroke="#1A365D" stroke-width="0.35" d="M77 49 L85 49 L84 58 L77 57 Z"/>
+      <path fill="#E2C27A" stroke="#1A365D" stroke-width="0.35" d="M85 34 L89 33 L89 41 L85 41 Z"/>
+      <path fill="#E2C27A" stroke="#1A365D" stroke-width="0.35" d="M90 36 L95 35 L96 45 L91 45 Z"/>
+      <path fill="#E2C27A" stroke="#1A365D" stroke-width="0.35" d="M76 58 L91 57 L91 63 L77 64 Z"/>
+      <path fill="#E2C27A" stroke="#1A365D" stroke-width="0.35" d="M74 64 L93 63 L95 74 L82 77 L74 72 Z"/>
+      <path fill="#E2C27A" stroke="#1A365D" stroke-width="0.35" d="M91 72 L95 71 L96 77 L92 78 Z"/>
+    </svg>
+    ${seas}${neutrals}${cities}${labels}
+    <span class="cross-land" style="left:46%;top:37%" title="No readable name">+</span>`;
+  bindRegions(map);
+}
+
+const WEDGE_FACE = [
+  ["Factory", "#3A84CE", "#FFFFFF", ""],
+  ["Production", "#8C8C90", "#1A1A1A", "after Factory"],
+  ["Maneuver", "#C4D610", "#1A1A1A", "before Investor"],
+  ["Investor", "#9AD8E0", "#1A1A1A", ""],
+  ["Import", "#F47C36", "#1A1A1A", ""],
+  ["Production", "#8C8C90", "#1A1A1A", "after Import"],
+  ["Maneuver", "#C4D610", "#1A1A1A", "before Taxation"],
+  ["Taxation", "#E8C45C", "#1A1A1A", ""]
+];
+
+function wedgePath(cx, cy, r0, r1, a0, a1) {
+  const point = (radius, angle) => [cx + Math.sin(angle) * radius, cy - Math.cos(angle) * radius];
+  const [x0, y0] = point(r1, a0);
+  const [x1, y1] = point(r1, a1);
+  const [x2, y2] = point(r0, a1);
+  const [x3, y3] = point(r0, a0);
+  return `M ${x0} ${y0} A ${r1} ${r1} 0 0 1 ${x1} ${y1} L ${x2} ${y2} A ${r0} ${r0} 0 0 0 ${x3} ${y3} Z`;
+}
+
+function wheelPoint(cx, cy, radius, place) {
+  const angle = place * Math.PI / 4;
+  return [cx + Math.sin(angle) * radius, cy - Math.cos(angle) * radius];
 }
 
 function renderRondel() {
-  const panel = document.getElementById("action-rondel");
+  const slot = document.getElementById("wheel-slot");
   const rows = state ? state.legal.filter((item) => String(item.id).startsWith("rondel:")) : [];
-  if (!rows.length) { panel.hidden = true; panel.innerHTML = ""; return; }
-  panel.hidden = false;
-  const active = state.nations.find((nation) => nation.active);
-  panel.innerHTML = `
-    <h2>Action rondel</h2>
-    <p class="caption">Factory is at the top here. The map wheel may be turned differently. The clockwise order is the same.</p>
-    <p class="caption">1 to 3 fields for free.</p>
-    <div class="wheel-wrap">
-      <div class="wheel" id="wheel" aria-hidden="true"></div>
-      <div class="hub">hub</div>
-      ${state.rondelOrder.map((name, index) => {
-        const rad = ((index + 0.5) * 45) * Math.PI / 180;
-        const x = 144 + Math.sin(rad) * 100;
-        const y = 144 - Math.cos(rad) * 100;
-        const row = rows.find((item) => item.id === `rondel:${index}`);
-        const text = row && row.steps ? row.steps : (active && active.rondelIndex === index ? "now" : (row ? "any" : ""));
-        return `<button type="button" class="wedge-label" style="left:${x}px;top:${y}px" data-action="rondel:${index}" ${row && row.enabled ? "" : "disabled"}>${text}</button>`;
-      }).join("")}
-    </div>
-    <div role="radiogroup" aria-label="Rondel spaces">${rows.map((item) => `<button type="button" class="rondel-row ${item.privateBlock ? "blocked" : ""}" data-action="${item.id}" ${item.enabled ? "" : "disabled"}><span>${item.steps || "any"}</span><span>${item.label}${item.selected ? " Selected" : ""}</span><span>${item.cost}</span><span>${item.privateBlock ? "cannot pay" : (item.selected ? "selected" : "")}</span></button>`).join("")}</div>`;
-  panel.querySelectorAll("[data-action]").forEach((button) => {
-    if (!button.disabled) button.addEventListener("click", () => send(button.dataset.action));
+  const byId = Object.fromEntries(rows.map((item) => [item.id, item]));
+  const paths = [];
+  const labels = [];
+  WEDGE_FACE.forEach((face, index) => {
+    const place = (index + 1) % 8;
+    const a0 = (place - 0.5) * Math.PI / 4;
+    const a1 = (place + 0.5) * Math.PI / 4;
+    const row = byId[`rondel:${index}`];
+    const blocked = !!(row && row.privateBlock);
+    const steps = !row ? "" : (row.steps == null ? "any" : String(row.steps));
+    const meta = [steps, row ? row.cost : "", row && row.selected ? "selected" : "", blocked ? "cannot pay" : ""].filter((part) => part !== "" && part != null).join(" ");
+    const detail = [face[0], face[3], steps, row ? `cost ${row.cost}` : "", row && row.selected ? "selected" : "", blocked ? "cannot pay" : ""].filter(Boolean).join(" ");
+    const fill = blocked ? "#1A1814" : face[1];
+    const ink = blocked ? "#F4F0E6" : face[2];
+    const selected = !!(row && row.selected);
+    const disabled = !!(row && !row.enabled);
+    const nameAt = wheelPoint(140, 140, 96, place);
+    const metaAt = wheelPoint(140, 140, 72, place);
+    let deg = place * 45;
+    if (deg > 90 && deg < 270) deg += 180;
+    const squeeze = face[0].length >= 8 ? ' textLength="58" lengthAdjust="spacingAndGlyphs"' : "";
+    paths.push(`<path data-action="rondel:${index}" role="button" tabindex="${disabled ? "-1" : "0"}" aria-label="${detail}" aria-disabled="${disabled ? "true" : "false"}" d="${wedgePath(140, 140, 42, 116, a0, a1)}" fill="${fill}" stroke="${selected ? "#E8A317" : "#1A365D"}" stroke-width="${selected ? 4 : 1.5}"/>`);
+    labels.push(`<text x="${nameAt[0]}" y="${nameAt[1]}" fill="${ink}" font-size="13" font-weight="700" text-anchor="middle" dominant-baseline="middle" transform="rotate(${deg} ${nameAt[0]} ${nameAt[1]})" pointer-events="none"${squeeze}>${face[0]}</text>`);
+    if (meta) labels.push(`<text x="${metaAt[0]}" y="${metaAt[1]}" fill="${ink}" font-size="9" font-weight="700" text-anchor="middle" dominant-baseline="middle" transform="rotate(${deg} ${metaAt[0]} ${metaAt[1]})" pointer-events="none">${meta}</text>`);
+    (state ? state.nations : []).filter((nation) => nation.rondelIndex === index).forEach((nation, markIndex, group) => {
+      const style = nationById[nation.id];
+      const at = wheelPoint(140, 140, 108, place);
+      const shift = (markIndex - (group.length - 1) / 2) * 14;
+      const tangent = place * Math.PI / 4 + Math.PI / 2;
+      const cx = at[0] + Math.cos(tangent) * shift;
+      const cy = at[1] + Math.sin(tangent) * shift;
+      labels.push(`<circle cx="${cx}" cy="${cy}" r="6" fill="${style[4]}" stroke="#1A1A1A" stroke-width="1" pointer-events="none"><title>${style[1]}</title></circle>`);
+    });
+  });
+  const hub = (state ? state.nations : []).filter((nation) => nation.rondelIndex == null).map((nation) => nationById[nation.id][3]).join(" ");
+  slot.innerHTML = `<div class="wheel"><svg viewBox="0 0 280 280" role="img" aria-label="Rondel">
+    <circle cx="140" cy="140" r="130" fill="none" stroke="#7EC8E3" stroke-width="14"/>
+    <circle cx="140" cy="140" r="130" fill="none" stroke="#1A365D" stroke-width="2"/>
+    ${paths.join("")}
+    ${labels.join("")}
+    <circle cx="140" cy="140" r="42" fill="#C5C8CE" stroke="#1A365D"/>
+    <circle cx="140" cy="140" r="16" fill="#9AA0A8"/>
+    <text x="140" y="144" text-anchor="middle" font-size="12" font-weight="700" fill="#1A1A1A">${hub || "hub"}</text>
+    <rect x="70" y="256" width="140" height="16" rx="2" fill="#1A365D"/>
+    <text x="140" y="267" text-anchor="middle" font-size="9" font-weight="700" fill="#F4F0E6">1 to 3 fields for free</text>
+  </svg></div>`;
+  slot.querySelectorAll("[data-action]").forEach((path) => {
+    const go = () => {
+      if (!state) return;
+      if (path.getAttribute("aria-disabled") === "true") return;
+      const row = byId[path.dataset.action];
+      if (row && row.enabled) send(row.id);
+      else {
+        flash = "Not a legal choice.";
+        renderBanner();
+        setTimeout(() => { if (flash === "Not a legal choice.") { flash = ""; renderBanner(); } }, 2000);
+      }
+    };
+    path.addEventListener("click", go);
+    path.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        go();
+      }
+    });
   });
 }
 
 function renderTax() {
   const root = document.getElementById("tax-chart");
-  if (!state) { root.innerHTML = ""; return; }
-  const hot = state.banner.phase === "Taxation" ? (state.legal.find((item) => item.taxColumn != null) || {}).taxColumn : null;
+  const hot = state && state.banner.phase === "Taxation" ? (state.legal.find((item) => item.taxColumn != null) || {}).taxColumn : null;
   const headers = ["0-5", "6", "8", "10", "11", "12", "13", "14", "15", "16", "18+"];
+  const bonus = state ? state.tax.bonus : [0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5];
+  const power = state ? state.tax.power : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   const row = (label, values) => `<tr><th>${label}</th>${values.map((value, index) => `<td class="${index === hot ? "hot" : ""}">${value}</td>`).join("")}</tr>`;
   root.innerHTML = `<table><caption>Tax chart. A revenue of 7, 9, or 17 uses the rightmost header at or below it.</caption>
     <tr><th>Tax</th>${headers.map((value, index) => `<th class="${index === hot ? "hot" : ""}">${value}</th>`).join("")}</tr>
-    ${row("Bonus", state.tax.bonus)}
-    ${row("Power", state.tax.power)}
+    ${row("Bonus", bonus)}
+    ${row("Power", power)}
   </table>`;
 }
 
